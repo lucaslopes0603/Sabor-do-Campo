@@ -69,9 +69,4 @@ O frontend abre em `http://localhost:5173`.
 - o backend foi migrado para Spring Boot
 - a base inicial de produtos e inserida automaticamente quando a tabela estiver vazia
 
-## Proximos passos sugeridos
 
-- autenticacao para area administrativa
-- upload real de imagens
-- carrinho com persistencia de pedido
-- deploy do frontend e backend
