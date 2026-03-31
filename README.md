@@ -31,14 +31,14 @@ Servidor detectado localmente:
 Opcao 1, pela pasta `backend`:
 
 ```powershell
-cd C:\Users\LOPS\Desktop\COMP\Sabor-do-Campo\backend
+cd ...\Sabor-do-Campo\backend
 .\run.ps1
 ```
 
 Opcao 2, direto pelo Spring Boot:
 
 ```powershell
-cd C:\Users\LOPS\Desktop\COMP\Sabor-do-Campo\backend-spring
+cd ...\Sabor-do-Campo\backend-spring
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -47,7 +47,7 @@ A API sobe em `http://localhost:8080`.
 ## Como rodar o frontend
 
 ```powershell
-cd C:\Users\LOPS\Desktop\COMP\Sabor-do-Campo\frontend
+cd ...\Sabor-do-Campo\frontend
 npm install
 npm run dev
 ```
