@@ -1,6 +1,18 @@
 # Sabor do Campo
 
-Projeto de mercado vegano com frontend em React e backend em Spring Boot + MySQL.
+O Sabor do Campo é um sistema de delivery que permite aos usuários visualizar um cardápio digital de forma prática e organizada, facilitando a escolha de produtos e a realização de pedidos.  
+A proposta do sistema é oferecer uma experiência simples e intuitiva, onde o cliente pode navegar pelas categorias, selecionar itens e acompanhar o valor total da compra antes de finalizar o pedido.  
+
+---
+
+## Integrantes  
+- Ane Madjarian Viana - SYNC
+- Fábio Garcia Martins - KERNEL
+- Lucas Lopes Freitas Moura - KERNEL
+- Marcos Vinícius Nunes Reis - KERNEL
+- Tatielle Fernandes Dias - AURA
+
+---
 
 ## Estrutura
 
