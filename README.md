@@ -4,7 +4,7 @@ Projeto de mercado vegano com frontend em React e backend em Spring Boot + MySQL
 
 ## Estrutura
 
-- `frontend`: interface React para visualizar o cardapio e cadastrar produtos
+- `frontend`: interface React para visualizar os produtos
 - `backend-spring`: API Spring Boot com JPA e persistencia em MySQL
 - `backend`: atalho de execucao para subir o novo backend Spring Boot
 
