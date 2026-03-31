@@ -1,6 +1,6 @@
 # Sabor do Campo
 
-Projeto de cardapio digital com frontend em React e backend em Spring Boot + MySQL.
+Projeto de mercado vegano com frontend em React e backend em Spring Boot + MySQL.
 
 ## Estrutura
 
