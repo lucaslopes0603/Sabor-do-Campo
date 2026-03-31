@@ -62,11 +62,6 @@ O frontend abre em `http://localhost:5173`.
 - `GET /api/menu-items?category=ENTRADA`
 - `POST /api/menu-items`
 
-## O que mudou
 
-- antes os produtos ficavam apenas em memoria
-- agora os produtos sao persistidos no MySQL
-- o backend foi migrado para Spring Boot
-- a base inicial de produtos e inserida automaticamente quando a tabela estiver vazia
 
 
