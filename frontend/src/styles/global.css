@@ -66,7 +66,8 @@ button {
 .hero-copy h2,
 .form-card h2,
 .section-heading h3,
-.menu-card h3 {
+.menu-card h3,
+.cart-card h3 {
   font-family: Georgia, 'Times New Roman', serif;
 }
 
@@ -420,6 +421,85 @@ button {
 .menu-card-footer button:hover,
 .submit-button:hover {
   transform: translateY(-1px);
+}
+
+.cart-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(244, 243, 236, 0.48);
+  border: 1px solid rgba(104, 126, 91, 0.18);
+}
+
+.cart-card-image-wrapper {
+  width: 84px;
+  height: 84px;
+  aspect-ratio: 1;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(189, 207, 177, 0.85), rgba(221, 231, 212, 0.95));
+}
+
+.cart-card-image,
+.cart-card-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.cart-card-image {
+  object-fit: cover;
+}
+
+.cart-card-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.cart-card-content {
+  flex: 1;
+}
+
+.cart-card-price {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.cart-card-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #7d9c72;
+}
+
+.cart-card-remove svg {
+  font-size: 20px;
+}
+
+.cart-card-remove:hover {
+  color: #c94c4c;
+  transform: scale(1.1);
+  transition: transform 150ms ease;
+}
+
+.cart-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
 @media (max-width: 780px) {
