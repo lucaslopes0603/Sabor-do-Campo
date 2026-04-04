@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Optional;
 
 @Configuration
-public class DataInitializer {
+public class CartDataInitializer {
 
     @Bean
     CommandLineRunner seedCart(ShoppingCartRepository shoppingCartRepository) {
