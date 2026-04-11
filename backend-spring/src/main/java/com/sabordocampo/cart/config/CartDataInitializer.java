@@ -1,5 +1,6 @@
 package com.sabordocampo.cart.config;
 
+import com.sabordocampo.cart.domain.Address;
 import com.sabordocampo.cart.domain.ShoppingCart;
 import com.sabordocampo.cart.repository.ShoppingCartRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,15 @@ public class CartDataInitializer {
             Optional<ShoppingCart> existingCart = shoppingCartRepository.findById(1L);
             if (existingCart.isEmpty()) {
                 ShoppingCart cart = new ShoppingCart();
+                String street = "Rua Cláudio Manoel";
+                String number = "1162";
+                String neighborhood = "Savassi";
+                String city = "Belo Horizonte";
+                String state = "MG";
+                String zipCode = "30140-100";
+                String complement = "Prédio 04";
+                Address address = new Address(street, number, neighborhood, city, state, zipCode, complement);
+                cart.setAddress(address);
                 shoppingCartRepository.save(cart);
             };
         };

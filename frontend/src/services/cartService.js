@@ -21,6 +21,10 @@ async function request(path, options = {}) {
   return JSON.parse(text);
 }
 
+export function fetchCart(cartId) {
+  return request(`/carts/${cartId}`);
+}
+
 export function fetchCartItems(cartId) {
   return request(`/carts/${cartId}/items`);
 }
@@ -35,5 +39,12 @@ export function createCartItem(cartId, menuItemId) {
 export function removeCartItem(cartId, itemId) {
   return request(`/carts/${cartId}/items/${itemId}`, {
     method: 'DELETE',
+  });
+}
+
+export function updateCartAddress(cartId, address) {
+  return request(`/carts/${cartId}/address`, {
+    method: 'PUT',
+    body: JSON.stringify(address),
   });
 }

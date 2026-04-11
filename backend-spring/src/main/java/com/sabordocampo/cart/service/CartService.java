@@ -1,15 +1,19 @@
 package com.sabordocampo.cart.service;
 
+import com.sabordocampo.cart.domain.Address;
 import com.sabordocampo.cart.domain.CartItem;
 import com.sabordocampo.cart.domain.ShoppingCart;
 import com.sabordocampo.menu.domain.MenuItem;
 import com.sabordocampo.menu.repository.MenuItemRepository;
+import com.sabordocampo.cart.dto.AddressResponse;
 import com.sabordocampo.cart.dto.CartItemRequest;
 import com.sabordocampo.cart.dto.CartItemResponse;
+import com.sabordocampo.cart.dto.ShoppingCartResponse;
 import com.sabordocampo.cart.repository.CartItemRepository;
 import com.sabordocampo.cart.repository.ShoppingCartRepository;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +30,17 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
+    public ShoppingCartResponse getCart(Long cartId) {
+        return shoppingCartRepository.findById(cartId)
+            .map(this::toShoppingCartResponse)
+            .orElseThrow(() -> new RuntimeException("Carrinho não encontrado"));
+    }
+
+    @Transactional(readOnly = true)
     public List<CartItemResponse> listCartItems(Long cartId) {  
         List<CartItem> items = cartItemRepository.findByShoppingCartId(cartId);
 
-        return items.stream().map(this::toResponse).toList();
+        return items.stream().map(this::toCartItemResponse).toList();
     }
 
     @Transactional
@@ -43,7 +54,7 @@ public class CartService {
             menuItem
         );
 
-        return toResponse(cartItemRepository.save(cartItem));
+        return toCartItemResponse(cartItemRepository.save(cartItem));
     }
 
     @Transactional
@@ -56,7 +67,27 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
-    private CartItemResponse toResponse(CartItem cartItem) {
+    @Transactional
+    public void updateAddress(Long cartId, Address address) {
+        ShoppingCart cart = shoppingCartRepository.findById(cartId)
+        .orElseThrow(() -> new RuntimeException("Carrinho não encontrado"));
+        cart.setAddress(address);
+        shoppingCartRepository.save(cart);
+    }
+
+    private ShoppingCartResponse toShoppingCartResponse(ShoppingCart cart) {
+
+        List<CartItemResponse> items = cart.getItems().stream()
+            .map(this::toCartItemResponse).toList();
+
+        return new ShoppingCartResponse(
+            cart.getId(),
+            items,
+            toAddressResponse(cart.getAddress())
+        );
+    }
+
+    private CartItemResponse toCartItemResponse(CartItem cartItem) {
 
         return new CartItemResponse(
             cartItem.getId(),
@@ -64,6 +95,20 @@ public class CartService {
             cartItem.getMenuItem().getName(),
             cartItem.getMenuItem().getPrice(),
             normalizeOptional(cartItem.getMenuItem().getImageUrl())
+        );
+    }
+
+    private AddressResponse toAddressResponse(Address address) {
+        if (address == null) return null;
+
+        return new AddressResponse(
+            address.getStreet(),
+            address.getNumber(),
+            address.getNeighborhood(),
+            address.getCity(),
+            address.getState(),
+            address.getZipCode(),
+            address.getComplement()
         );
     }
 

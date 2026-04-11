@@ -3,7 +3,7 @@ import Header from './components/Header';
 import MenuPage from './pages/MenuPage';
 import ProductFormPage from './pages/ProductFormPage';
 import { useMenu } from './hooks/useMenu';
-import { fetchCartItems, createCartItem, removeCartItem } from './services/cartService';
+import { fetchCart, createCartItem, removeCartItem } from './services/cartService';
 import ShoppingCartPage from './pages/ShoppingCartPage';
 
 const CART_ID = 1; // Temporário, enquanto não tem carrinho por usuário.
@@ -25,25 +25,25 @@ function App() {
     refreshMenu,
     addMenuItem,
   } = useMenu();
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState({
+    items: [],
+    address: null
+  });
 
   useEffect(() => {
-  loadCart();
-}, []);
+    loadCart();
+  }, []);
 
-  const cartCount = cart.length;
+  const cartCount = cart.items.length;
 
-  const loadCart = async () => {
-    const data = await fetchCartItems(CART_ID);
-    const formatted = data.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      imageUrl: item.imageUrl
-    }));
+  async function loadCart() {
+    const data = await fetchCart(CART_ID);
 
-    setCart(formatted);
-  };
+    setCart({
+      items: data.items,
+      address: data.address
+    });
+  }
 
   const handleAddToCart = async (item) => {
     await createCartItem(CART_ID, item.id);
@@ -92,8 +92,10 @@ function App() {
           />
         )}
         {activePage === 'cart' && (
-          <ShoppingCartPage items={cart}
-          onRemoveItem={handleRemoveFromCart}
+          <ShoppingCartPage items={cart.items}
+            address={cart.address}
+            onRemoveItem={handleRemoveFromCart}
+            onAddressUpdate={loadCart}
           />
         )}
       </main>
