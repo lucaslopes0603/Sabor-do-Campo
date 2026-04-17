@@ -1,12 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './components/Header';
 import MenuPage from './pages/MenuPage';
 import ProductFormPage from './pages/ProductFormPage';
 import { useMenu } from './hooks/useMenu';
+import { fetchCart, createCartItem, removeCartItem } from './services/cartService';
+import ShoppingCartPage from './pages/ShoppingCartPage';
+
+const CART_ID = 1; // Temporário, enquanto não tem carrinho por usuário.
 
 const pages = {
   menu: 'Cardapio',
-  admin: 'Cadastro',
+  admin: 'Cadastro'
 };
 
 function App() {
@@ -21,27 +25,39 @@ function App() {
     refreshMenu,
     addMenuItem,
   } = useMenu();
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState({
+    items: [],
+    address: null
+  });
 
-  const cartCount = useMemo(
-    () => cart.reduce((total, current) => total + current.quantity, 0),
-    [cart],
-  );
+  useEffect(() => {
+    loadCart();
+  }, []);
 
-  const handleAddToCart = (item) => {
-    setCart((currentCart) => {
-      const existingItem = currentCart.find((cartItem) => cartItem.id === item.id);
+  const cartCount = cart.items.length;
 
-      if (existingItem) {
-        return currentCart.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem,
-        );
-      }
+  async function loadCart() {
+    const data = await fetchCart(CART_ID);
 
-      return [...currentCart, { id: item.id, name: item.name, quantity: 1 }];
+    setCart({
+      items: data.items,
+      address: data.address
     });
+  }
+
+  const handleAddToCart = async (item) => {
+    await createCartItem(CART_ID, item.id);
+    await loadCart();
+  };
+
+  const handleRemoveFromCart = async (itemId) => {
+    try {
+      await removeCartItem(CART_ID, itemId);
+      await loadCart();
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao remover item');
+    }
   };
 
   return (
@@ -52,9 +68,8 @@ function App() {
         cartCount={cartCount}
         pages={pages}
       />
-
       <main className="page-content">
-        {activePage === 'menu' ? (
+        {activePage === 'menu' && (
           <MenuPage
             categories={categories}
             items={items}
@@ -65,7 +80,8 @@ function App() {
             onAddToCart={handleAddToCart}
             onRetry={refreshMenu}
           />
-        ) : (
+        )}
+        {activePage === 'admin' && (
           <ProductFormPage
             categories={categories}
             onSubmit={addMenuItem}
@@ -73,6 +89,13 @@ function App() {
               refreshMenu();
               setActivePage('menu');
             }}
+          />
+        )}
+        {activePage === 'cart' && (
+          <ShoppingCartPage items={cart.items}
+            address={cart.address}
+            onRemoveItem={handleRemoveFromCart}
+            onAddressUpdate={loadCart}
           />
         )}
       </main>

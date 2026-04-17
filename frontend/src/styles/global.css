@@ -66,7 +66,8 @@ button {
 .hero-copy h2,
 .form-card h2,
 .section-heading h3,
-.menu-card h3 {
+.menu-card h3,
+.cart-card h3 {
   font-family: Georgia, 'Times New Roman', serif;
 }
 
@@ -420,6 +421,194 @@ button {
 .menu-card-footer button:hover,
 .submit-button:hover {
   transform: translateY(-1px);
+}
+
+.cart-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(244, 243, 236, 0.48);
+  border: 1px solid rgba(104, 126, 91, 0.18);
+}
+
+.cart-card-image-wrapper {
+  width: 84px;
+  height: 84px;
+  aspect-ratio: 1;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(189, 207, 177, 0.85), rgba(221, 231, 212, 0.95));
+}
+
+.cart-card-image,
+.cart-card-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.cart-card-image {
+  object-fit: cover;
+}
+
+.cart-card-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.cart-card-content {
+  flex: 1;
+}
+
+.cart-card-price {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.cart-card-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #7d9c72;
+}
+
+.cart-card-remove svg {
+  font-size: 20px;
+}
+
+.cart-card-remove:hover {
+  color: #c94c4c;
+  transform: scale(1.1);
+  transition: transform 150ms ease;
+}
+
+.cart-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.address-section {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+}
+
+.address-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  margin: 0;
+}
+
+.address-text {
+  margin: 0;
+  font-weight: 600;
+  color: var(--primary-dark);
+  text-align: center;
+}
+
+.edit-address-button {
+  margin-top: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(72, 96, 67, 0.18);
+  background: rgba(245, 242, 234, 0.6);
+  color: #45583f;
+  transition: all 180ms ease;
+}
+
+.edit-address-button:hover {
+  background: var(--primary);
+  color: #fffdf8;
+  transform: translateY(-1px);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(60, 70, 50, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: min(500px, 90%);
+  background: linear-gradient(180deg, #f5efdf 0%, #f0e9d8 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 12px;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(72, 96, 67, 0.16);
+  background: rgba(240, 240, 230, 0.6);
+  outline: none;
+}
+
+.modal-content input:focus {
+  border-color: rgba(101, 129, 91, 0.8);
+  box-shadow: 0 0 0 3px rgba(101, 129, 91, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(72, 96, 67, 0.18);
+  background: rgba(245, 242, 234, 0.5);
+}
+
+.modal-actions button:first-child {
+  background: var(--primary);
+  color: #fffdf8;
+  border: none;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @media (max-width: 780px) {
