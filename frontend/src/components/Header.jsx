@@ -1,3 +1,5 @@
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 function Header({ activePage, onNavigate, cartCount, pages }) {
   return (
     <header className="topbar">
@@ -20,10 +22,15 @@ function Header({ activePage, onNavigate, cartCount, pages }) {
             {label}
           </button>
         ))}
-        <div className="cart-badge" aria-label={`Carrinho com ${cartCount} itens`}>
-          <span className="cart-icon" aria-hidden="true">??</span>
+        <button
+          type="button"
+          className="cart-badge"
+          aria-label={`Carrinho com ${cartCount} itens`}
+          onClick={() => onNavigate('cart')}
+        >
+          <ShoppingCartIcon className="cart-icon" />
           <strong>{cartCount}</strong>
-        </div>
+        </button>
       </nav>
     </header>
   );

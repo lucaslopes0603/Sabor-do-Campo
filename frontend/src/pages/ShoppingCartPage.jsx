@@ -1,0 +1,82 @@
+import { useState } from 'react';
+import AddressModal from '../components/AddressModal';
+import CartItemCard from '../components/CartItemCard';
+import { updateCartAddress } from '../services/cartService';
+
+function ShoppingCartPage({
+  items,
+  address,
+  onAddressUpdate,
+  onRemoveItem
+}) {
+
+  const [showModal, setShowModal] = useState(false);
+
+  const DEFAULT_SHIPPING_PRICE = 10
+    
+  const total = items.reduce((sum, item) => sum + item.price, 0) + DEFAULT_SHIPPING_PRICE;
+
+  async function handleSaveAddress(newAddress) {
+    await updateCartAddress(1, newAddress);
+    onAddressUpdate(newAddress);
+    setShowModal(false);
+  }
+
+  function formatAddress(address) {
+    if (
+      !address ||
+      !address.street ||
+      !address.number ||
+      !address.neighborhood ||
+      !address.city ||
+      !address.state
+    ) {
+      return 'Nenhum endereço cadastrado';
+    }
+
+    return `${address.street}, ${address.number} - ${address.neighborhood}, ${address.city} - ${address.state}`;
+  }
+
+  return (
+    <section className="hero-card">
+      <div className="hero-copy">
+        <h2>Seu Carrinho</h2>
+        <div className="address-section">
+          <p className="address-label">Endereço de entrega</p>
+          <p className="address-text">{formatAddress(address)}</p>
+          <button className="edit-address-button" onClick={() => setShowModal(true)}>
+            Alterar endereço
+          </button>
+        </div>
+      </div>
+
+      <div className="menu-panel">
+        {items.length === 0 ? (
+          <p>Carrinho vazio</p>
+        ) : (
+          <>
+          <div className="cart-list">
+            {items.map((item) => (
+              <CartItemCard key={item.id} item={item} onRemove={onRemoveItem} />
+            ))}
+          </div>
+          <div className="cart-total">
+            <h3>Total (R$ {DEFAULT_SHIPPING_PRICE.toFixed(2).replace('.', ',')} de Frete)</h3>
+            <strong>R$ {total.toFixed(2).replace('.', ',')}</strong>
+          </div>
+        </>
+      )}
+      </div>
+
+      <AddressModal
+        isOpen={showModal}
+        address={address}
+        onClose={() => setShowModal(false)}
+        onSave={handleSaveAddress}
+      />
+
+    </section>
+  );
+}
+
+export default ShoppingCartPage;
