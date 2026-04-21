@@ -5,16 +5,21 @@ import ProductFormPage from './pages/ProductFormPage';
 import { useMenu } from './hooks/useMenu';
 import { fetchCart, createCartItem, removeCartItem } from './services/cartService';
 import ShoppingCartPage from './pages/ShoppingCartPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const CART_ID = 1; // Temporário, enquanto não tem carrinho por usuário.
 
 const pages = {
   menu: 'Cardapio',
-  admin: 'Cadastro'
+  admin: 'Cadastro',
+  login: "Entrar",
+  register: "Registro"
 };
 
 function App() {
   const [activePage, setActivePage] = useState('menu');
+  const [user, setUser] = useState(null);
   const {
     categories,
     items,
@@ -60,6 +65,17 @@ function App() {
     }
   };
 
+  function handleLogin() {
+    setUser({ name: "Usuário" });
+    setActivePage('menu');
+  }
+
+  function handleLogout() {
+    setUser(null);
+    setActivePage('menu');
+  }
+
+
   return (
     <div className="app-shell">
       <Header
@@ -97,6 +113,12 @@ function App() {
             onRemoveItem={handleRemoveFromCart}
             onAddressUpdate={loadCart}
           />
+        )}
+        {activePage === 'login' && (
+          <LoginPage onLogin={handleLogin} />
+        )}
+        {activePage === 'register' && (
+          <RegisterPage />
         )}
       </main>
     </div>
