@@ -74,6 +74,8 @@ O frontend abre em `http://localhost:5173`.
 - `GET /api/menu-items?category=ENTRADA`
 - `POST /api/menu-items`
 
-
+-`GET /api/pedidos/{pedidoId}/status`Retorna o status atual do pedido
+-`POST /api/pedidos/{pedidoId}/confirmar-entrega`  Marca como entregue.
+-`POST /api/carts/{cartId}/confirmar-pedido` Cria o pedido e inicia o fluxo de status.
 
 
