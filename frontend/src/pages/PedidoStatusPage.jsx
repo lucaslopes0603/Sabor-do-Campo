@@ -97,7 +97,6 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
         <div className="hero-copy">
           <h2>Status do pedido</h2>
           <p className="pedido-code">Codigo: {pedido.codigo}</p>
-          <p>Atualizacao automatica a cada 5 segundos.</p>
         </div>
 
         <div className="menu-panel">
