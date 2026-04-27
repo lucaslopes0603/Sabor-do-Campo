@@ -1,10 +1,12 @@
 package com.sabordocampo.user.web;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,9 +25,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/{userId}")
-    public UserResponse getUser(@PathVariable Long userId) {
-        return userService.getUser(userId);
+    @GetMapping("/users/me")
+    public UserResponse getUser(Authentication authentication) {
+        return userService.getUser(authentication.getName());
     }
 
     @PostMapping("/users")
@@ -33,13 +35,13 @@ public class UserController {
         return userService.createUser(request);
     }
 
-    @DeleteMapping("users/{userId}")
-    public void removeUser(@PathVariable Long userId) {
-        userService.removeUser(userId);
+    @DeleteMapping("users/me")
+    public void removeUser(Authentication authentication) {
+        userService.removeUser(authentication.getName());
     }
 
-    /* @PutMapping("users/{userId}")
-    public void updateUser(@PathVariable Long userId) {
-        userService.updateUser(userId);
-    } */
+    @PutMapping("/users/me")
+    public void updateUser(Authentication authentication, @RequestBody UserRequest request) {
+        userService.updateUser(authentication.getName(), request);
+    }
 }

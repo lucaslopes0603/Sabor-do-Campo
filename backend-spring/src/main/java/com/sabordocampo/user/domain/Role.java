@@ -1,6 +1,10 @@
 package com.sabordocampo.user.domain;
 
 public enum Role {
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN;
+
+    public String getAuthority() {
+        return this.name();
+    }
 }
