@@ -133,7 +133,8 @@ button {
 
 .nav-button,
 .tab-button,
-.cart-badge {
+.cart-badge,
+.person-badge {
   padding: 8px 12px;
   border: none;
   background: transparent;
@@ -148,7 +149,8 @@ button {
   border-color: transparent;
 }
 
-.cart-badge {
+.cart-badge,
+.person-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -540,6 +542,24 @@ button {
   transform: translateY(-1px);
 }
 
+.link-button {
+  padding: 10px 16px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(72, 96, 67, 0.18);
+  background: rgba(245, 242, 234, 0.5);
+
+  color: #45583f;
+
+  transition: all 180ms ease;
+}
+
+.link-button:hover {
+  background: var(--primary);
+  color: #fffdf8;
+  transform: translateY(-1px);
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -637,10 +657,13 @@ button {
 
   .nav-button,
   .cart-badge,
+  .person-badge,
   .tab-button {
     width: 100%;
     justify-content: center;
   }
+
+  
 
   .menu-panel {
     padding: 18px;
