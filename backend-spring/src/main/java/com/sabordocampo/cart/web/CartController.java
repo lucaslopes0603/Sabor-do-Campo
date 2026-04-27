@@ -5,7 +5,6 @@ import com.sabordocampo.cart.dto.CartItemRequest;
 import com.sabordocampo.cart.dto.CartItemResponse;
 import com.sabordocampo.cart.dto.ShoppingCartResponse;
 import com.sabordocampo.cart.service.CartService;
-import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;

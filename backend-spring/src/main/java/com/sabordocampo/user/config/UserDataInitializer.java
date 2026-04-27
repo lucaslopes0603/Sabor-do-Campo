@@ -1,6 +1,5 @@
 package com.sabordocampo.user.config;
 
-import com.sabordocampo.cart.domain.Address;
 import com.sabordocampo.user.domain.Role;
 import com.sabordocampo.user.domain.User;
 import com.sabordocampo.user.repository.UserRepository;

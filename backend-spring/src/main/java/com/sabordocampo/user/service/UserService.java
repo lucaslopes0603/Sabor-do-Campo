@@ -88,8 +88,4 @@ public class UserService {
             address.getComplement()
         );
     }
-
-    private String normalizeOptional(String value) {
-        return value == null ? "" : value.trim();
-    }
 }
