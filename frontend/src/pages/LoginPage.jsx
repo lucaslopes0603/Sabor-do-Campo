@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { login } from "../services/loginService";
 
-function LoginPage({ onLogin }) {
+function LoginPage({ onLogin, onNavigate }) {
   const [form, setForm] = useState({
     email: "",
     password: ""
@@ -12,13 +13,13 @@ function LoginPage({ onLogin }) {
     e.preventDefault();
 
     try {
-      // TODO: API de login
-      console.log("Login:", form);
+      const data = await login(form);
 
       setStatus({ type: "success", message: "Login realizado!" });
 
-      if (onLogin) onLogin();
+      if (onLogin) onLogin(data);
     } catch (err) {
+      console.log(err);
       setStatus({ type: "error", message: "Email ou senha inválidos" });
     }
   }
@@ -61,6 +62,11 @@ function LoginPage({ onLogin }) {
 
           <button className="submit-button" type="submit">
             Entrar
+          </button>
+
+          <button type="button" className="link-button"
+          onClick={() => onNavigate('register')}>
+            Não tem conta? Criar
           </button>
         </form>
       </div>

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { createUser } from "../services/registerService";
 
-function RegisterPage() {
+function RegisterPage({ onNavigate }) {
   const [form, setForm] = useState({
     name: "",
-    CPF: "",
+    cpf: "",
     email: "",
     password: "",
     phone: ""
@@ -46,8 +46,8 @@ function RegisterPage() {
             <span>CPF</span>
             <input
               required
-              value={form.CPF}
-              onChange={(e) => setForm({ ...form, CPF: e.target.value })}
+              value={form.cpf}
+              onChange={(e) => setForm({ ...form, cpf: e.target.value })}
             />
           </label>
 
@@ -89,6 +89,14 @@ function RegisterPage() {
 
           <button className="submit-button" type="submit">
             Criar conta
+          </button>
+
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => onNavigate('login')}
+          >
+            Já tem login? Entrar
           </button>
         </form>
       </div>
