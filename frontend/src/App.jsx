@@ -10,8 +10,8 @@ import PedidoStatusPage from './pages/PedidoStatusPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import HomePage from './pages/HomePage';
 
-const CART_ID = 1;  // Temporario, enquanto nao tem carrinho por usuario.
 const PEDIDO_STORAGE_KEY = 'pedido_atual';
 
 const pages = {
@@ -20,7 +20,7 @@ const pages = {
 };
 
 function App() {
-  const [activePage, setActivePage] = useState('menu');
+  const [activePage, setActivePage] = useState('home');
   const [user, setUser] = useState(null);
 
   const {
@@ -35,6 +35,7 @@ function App() {
   } = useMenu();
 
   const [cart, setCart] = useState({
+    id: null,
     items: [],
     address: null
   });
@@ -92,11 +93,12 @@ function App() {
     const data = await fetchCart();
 
     if (!data) {
-      setCart({ items: [], address: null });
+      setCart({ id: null, items: [], address: null });
       return;
     }
 
     setCart({
+      id: data.id ?? null,
       items: data.items ?? [],
       address: data.address ?? null
     });
@@ -126,7 +128,15 @@ function App() {
 
   // pedido
   const handleConfirmarPedido = async () => {
-    const pedido = await confirmarPedido(CART_ID);
+    if (!user) {
+      throw new Error('Voce precisa estar logado para confirmar o pedido.');
+    }
+
+    if (!cart.id) {
+      throw new Error('Nao foi possivel identificar o carrinho para confirmar o pedido.');
+    }
+
+    const pedido = await confirmarPedido(cart.id);
     setPedidoAtual(pedido);
     await loadCart();
     setActivePage('pedidoStatus');
@@ -148,7 +158,7 @@ function App() {
       await createCartItem(item.id);
     }
 
-    setCart({ items: [], address: null });
+    setCart({ id: null, items: [], address: null });
     localStorage.removeItem('guest_cart');
 
     await loadCart();
@@ -158,7 +168,7 @@ function App() {
   function handleLogout() {
     localStorage.removeItem('token');
     setUser(null);
-    setCart({ items: [], address: null });
+    setCart({ id: null, items: [], address: null });
     setActivePage('menu');
   }
 
@@ -171,11 +181,13 @@ function App() {
         pages={pages}
         user={user}
         hasActivePedido={Boolean(
-          pedidoAtual?.id && pedidoAtual?.status !== 'PEDIDO_ENTREGUE'
+          user && pedidoAtual?.id && pedidoAtual?.status !== 'PEDIDO_ENTREGUE'
         )}
       />
 
       <main className="page-content">
+        {activePage === 'home' && <HomePage onGoToMenu={() => setActivePage('menu')} />}
+
         {activePage === 'menu' && (
           <MenuPage
             categories={categories}
@@ -204,6 +216,8 @@ function App() {
           <ShoppingCartPage
             items={cart.items}
             address={cart.address}
+            isLoggedIn={Boolean(user)}
+            onRequireLogin={() => setActivePage('login')}
             onRemoveItem={handleRemoveFromCart}
             onAddressUpdate={loadCart}
             onConfirmarPedido={handleConfirmarPedido}
