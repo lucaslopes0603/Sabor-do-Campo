@@ -5,8 +5,9 @@ import ProductFormPage from './pages/ProductFormPage';
 import { useMenu } from './hooks/useMenu';
 import { fetchCart, createCartItem, removeCartItem } from './services/cartService';
 import ShoppingCartPage from './pages/ShoppingCartPage';
-
-const CART_ID = 1; // Temporário, enquanto não tem carrinho por usuário.
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 
 const pages = {
   menu: 'Cardapio',
@@ -15,6 +16,7 @@ const pages = {
 
 function App() {
   const [activePage, setActivePage] = useState('menu');
+  const [user, setUser] = useState(null);
   const {
     categories,
     items,
@@ -31,34 +33,89 @@ function App() {
   });
 
   useEffect(() => {
-    loadCart();
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser({ token });
+    }
   }, []);
+
+  useEffect(() => {
+    if (user) loadCart();
+  }, [user]);
+
+  useEffect(() => {
+    if(!user) {
+      const saved = localStorage.getItem('guest_cart');
+      if (saved) setCart(JSON.parse(saved));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem('guest_cart', JSON.stringify(cart));
+    }
+  }, [cart, user]);
 
   const cartCount = cart.items.length;
 
   async function loadCart() {
-    const data = await fetchCart(CART_ID);
+    const data = await fetchCart();
+
+    if(!data) {
+      setCart({
+        items: [],
+        address: null
+      });
+      return;
+    }
 
     setCart({
-      items: data.items,
-      address: data.address
+      items: data.items ?? [],
+      address: data.address ?? null
     });
   }
 
   const handleAddToCart = async (item) => {
-    await createCartItem(CART_ID, item.id);
+    if (!user) {
+      setCart(prev => ({
+        ...prev,
+        items: [...prev.items, item]
+      }));
+      return;
+    }
+    await createCartItem(item.id);
     await loadCart();
   };
 
   const handleRemoveFromCart = async (itemId) => {
     try {
-      await removeCartItem(CART_ID, itemId);
+      await removeCartItem(itemId);
       await loadCart();
     } catch (err) {
       console.error(err);
       alert('Erro ao remover item');
     }
   };
+
+  async function handleLogin(userData) {
+    setUser(userData);
+    for (const item of cart.items) {
+      await createCartItem(item.id);
+    }
+    
+    setCart({ items: [], address: null });
+    localStorage.removeItem('guest_cart');
+    await loadCart();
+    setActivePage('menu');
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    setUser(null);
+    setCart({ items: [], address: null });
+    setActivePage('menu');
+  }
+
 
   return (
     <div className="app-shell">
@@ -67,6 +124,7 @@ function App() {
         onNavigate={setActivePage}
         cartCount={cartCount}
         pages={pages}
+        user={user}
       />
       <main className="page-content">
         {activePage === 'menu' && (
@@ -97,6 +155,15 @@ function App() {
             onRemoveItem={handleRemoveFromCart}
             onAddressUpdate={loadCart}
           />
+        )}
+        {activePage === 'profile' && (
+          <ProfilePage onLogout={handleLogout} onNavigate={setActivePage} />
+        )}
+        {activePage === 'register' && (
+          <RegisterPage onNavigate={setActivePage} />
+        )}
+        {activePage === 'login' && (
+          <LoginPage onLogin={handleLogin} onNavigate={setActivePage} />
         )}
       </main>
     </div>
