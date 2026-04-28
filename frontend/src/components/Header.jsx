@@ -1,11 +1,15 @@
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import logoImage from '../assets/imgs/logo.svg';
 
-function Header({ activePage, onNavigate, cartCount, pages, user }) {
+  
+  function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, user }) {
   return (
     <header className="topbar">
       <div className="brand-mark">
-        <div className="brand-seal">SC</div>
+        <div className="brand-seal" aria-hidden="true">
+          <img src={logoImage} alt="logoheader" />
+        </div>
         <div>
           <p className="eyebrow">Cardapio Digital</p>
           <h1>Sabor do Campo</h1>
@@ -23,6 +27,17 @@ function Header({ activePage, onNavigate, cartCount, pages, user }) {
             {label}
           </button>
         ))}
+
+        {hasActivePedido && (
+          <button
+            type="button"
+            className={activePage === 'pedidoStatus' ? 'nav-button active' : 'nav-button'}
+            onClick={() => onNavigate('pedidoStatus')}
+          >
+            Pedido
+          </button>
+        )}
+
         <button
           type="button"
           className="cart-badge"

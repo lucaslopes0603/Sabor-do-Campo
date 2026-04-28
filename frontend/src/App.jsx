@@ -4,10 +4,15 @@ import MenuPage from './pages/MenuPage';
 import ProductFormPage from './pages/ProductFormPage';
 import { useMenu } from './hooks/useMenu';
 import { fetchCart, createCartItem, removeCartItem } from './services/cartService';
+import { confirmarPedido } from './services/pedidoService';
 import ShoppingCartPage from './pages/ShoppingCartPage';
+import PedidoStatusPage from './pages/PedidoStatusPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+
+const CART_ID = 1;  // Temporario, enquanto nao tem carrinho por usuario.
+const PEDIDO_STORAGE_KEY = 'pedido_atual';
 
 const pages = {
   menu: 'Cardapio',
@@ -17,6 +22,7 @@ const pages = {
 function App() {
   const [activePage, setActivePage] = useState('menu');
   const [user, setUser] = useState(null);
+
   const {
     categories,
     items,
@@ -27,24 +33,48 @@ function App() {
     refreshMenu,
     addMenuItem,
   } = useMenu();
+
   const [cart, setCart] = useState({
     items: [],
     address: null
   });
 
+  const [pedidoAtual, setPedidoAtual] = useState(() => {
+    const saved = localStorage.getItem(PEDIDO_STORAGE_KEY);
+    if (!saved) return null;
+
+    try {
+      return JSON.parse(saved);
+    } catch {
+      localStorage.removeItem(PEDIDO_STORAGE_KEY);
+      return null;
+    }
+  });
+
+  // carregar user pelo token
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      setUser({ token });
-    }
+    if (token) setUser({ token });
   }, []);
 
+  //  salvar pedido
+  useEffect(() => {
+    if (!pedidoAtual?.id) {
+      localStorage.removeItem(PEDIDO_STORAGE_KEY);
+      return;
+    }
+
+    localStorage.setItem(PEDIDO_STORAGE_KEY, JSON.stringify(pedidoAtual));
+  }, [pedidoAtual]);
+
+  //  carregar carrinho do usuário
   useEffect(() => {
     if (user) loadCart();
   }, [user]);
 
+  // carrinho guest
   useEffect(() => {
-    if(!user) {
+    if (!user) {
       const saved = localStorage.getItem('guest_cart');
       if (saved) setCart(JSON.parse(saved));
     }
@@ -61,11 +91,8 @@ function App() {
   async function loadCart() {
     const data = await fetchCart();
 
-    if(!data) {
-      setCart({
-        items: [],
-        address: null
-      });
+    if (!data) {
+      setCart({ items: [], address: null });
       return;
     }
 
@@ -83,6 +110,7 @@ function App() {
       }));
       return;
     }
+
     await createCartItem(item.id);
     await loadCart();
   };
@@ -91,20 +119,38 @@ function App() {
     try {
       await removeCartItem(itemId);
       await loadCart();
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert('Erro ao remover item');
     }
   };
 
+  // pedido
+  const handleConfirmarPedido = async () => {
+    const pedido = await confirmarPedido(CART_ID);
+    setPedidoAtual(pedido);
+    await loadCart();
+    setActivePage('pedidoStatus');
+  };
+
+  const handlePedidoStatusChange = (nextStatus) => {
+    setPedidoAtual(prev => {
+      if (!prev?.id || prev.status === nextStatus) return prev;
+      return { ...prev, status: nextStatus };
+    });
+  };
+
+  //  auth
   async function handleLogin(userData) {
     setUser(userData);
+
+    // migrar carrinho guest → backend
     for (const item of cart.items) {
       await createCartItem(item.id);
     }
-    
+
     setCart({ items: [], address: null });
     localStorage.removeItem('guest_cart');
+
     await loadCart();
     setActivePage('menu');
   }
@@ -116,7 +162,6 @@ function App() {
     setActivePage('menu');
   }
 
-
   return (
     <div className="app-shell">
       <Header
@@ -125,7 +170,11 @@ function App() {
         cartCount={cartCount}
         pages={pages}
         user={user}
+        hasActivePedido={Boolean(
+          pedidoAtual?.id && pedidoAtual?.status !== 'PEDIDO_ENTREGUE'
+        )}
       />
+
       <main className="page-content">
         {activePage === 'menu' && (
           <MenuPage
@@ -139,6 +188,7 @@ function App() {
             onRetry={refreshMenu}
           />
         )}
+
         {activePage === 'admin' && (
           <ProductFormPage
             categories={categories}
@@ -149,19 +199,33 @@ function App() {
             }}
           />
         )}
+
         {activePage === 'cart' && (
-          <ShoppingCartPage items={cart.items}
+          <ShoppingCartPage
+            items={cart.items}
             address={cart.address}
             onRemoveItem={handleRemoveFromCart}
             onAddressUpdate={loadCart}
+            onConfirmarPedido={handleConfirmarPedido}
           />
         )}
+
+        {activePage === 'pedidoStatus' && (
+          <PedidoStatusPage
+            pedido={pedidoAtual}
+            onBackToMenu={() => setActivePage('menu')}
+            onStatusChange={handlePedidoStatusChange}
+          />
+        )}
+
         {activePage === 'profile' && (
           <ProfilePage onLogout={handleLogout} onNavigate={setActivePage} />
         )}
+
         {activePage === 'register' && (
           <RegisterPage onNavigate={setActivePage} />
         )}
+
         {activePage === 'login' && (
           <LoginPage onLogin={handleLogin} onNavigate={setActivePage} />
         )}
