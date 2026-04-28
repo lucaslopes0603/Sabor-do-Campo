@@ -19,7 +19,7 @@ function ShoppingCartPage({
   const total = items.reduce((sum, item) => sum + item.price, 0) + DEFAULT_SHIPPING_PRICE;
 
   async function handleSaveAddress(newAddress) {
-    await updateCartAddress(1, newAddress);
+    await updateCartAddress(newAddress)
     onAddressUpdate(newAddress);
     setShowModal(false);
   }

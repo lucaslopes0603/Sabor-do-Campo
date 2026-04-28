@@ -1,7 +1,9 @@
+import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import logoImage from '../assets/imgs/logo.svg';
 
-function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido }) {
+  
+  function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, user }) {
   return (
     <header className="topbar">
       <div className="brand-mark">
@@ -44,6 +46,14 @@ function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido }) {
         >
           <ShoppingCartIcon className="cart-icon" />
           <strong>{cartCount}</strong>
+        </button>
+        <button
+          type="button"
+          className="person-badge"
+          aria-label="Acessar conta"
+          onClick={() => onNavigate(user ? 'profile' : 'login')}
+        >
+          <PersonIcon className="person-icon" />
         </button>
       </nav>
     </header>

@@ -18,36 +18,16 @@ async function request(path, options = {}) {
   }
 
   const text = await response.text();
-
   if (!text) return null;
 
   return JSON.parse(text);
 }
 
-export function fetchCart() {
-  return request(`/carts/me`);
-}
-
-export function fetchCartItems(cartId) {
-  return request(`/carts/me/items`);
-}
-
-export function createCartItem(menuItemId) {
-  return request(`/carts/me/items`, {
+export async function login(data) {
+  const response = await request('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ menuItemId }),
+    body: JSON.stringify(data),
   });
-}
-
-export function removeCartItem(itemId) {
-  return request(`/carts/me/items/${itemId}`, {
-    method: 'DELETE',
-  });
-}
-
-export function updateCartAddress(address) {
-  return request(`/carts/me/address`, {
-    method: 'PUT',
-    body: JSON.stringify(address),
-  });
+  localStorage.setItem('token', response.token);
+  return response;
 }
