@@ -1,4 +1,6 @@
 import { useState } from "react";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { createUser } from "../services/registerService";
 
 function RegisterPage({ onNavigate }) {
@@ -11,6 +13,7 @@ function RegisterPage({ onNavigate }) {
   });
 
   const [status, setStatus] = useState(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -65,12 +68,23 @@ function RegisterPage({ onNavigate }) {
           <div className="form-row">
             <label>
               <span>Senha</span>
-              <input
-                type="password"
-                required
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
+              <div className="password-field">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  required
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setIsPasswordVisible((prev) => !prev)}
+                  aria-label={isPasswordVisible ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={isPasswordVisible}
+                >
+                  {isPasswordVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                </button>
+              </div>
             </label>
 
             <label>

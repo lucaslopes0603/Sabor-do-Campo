@@ -18,7 +18,7 @@ import { getCurrentUser } from './services/profileService';
 const LEGACY_PEDIDO_STORAGE_KEY = 'pedido_atual';
 
 const pages = {
-  menu: 'Cardapio'
+  menu: 'Cardápio'
 };
 
 function App() {

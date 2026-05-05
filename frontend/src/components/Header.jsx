@@ -23,7 +23,7 @@ function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, use
           <img src={logoImage} alt="logoheader" />
         </div>
         <div>
-          {activePage !== 'home' && <p className="eyebrow">Cardapio Digital</p>}
+          {activePage !== 'home' && <p className="eyebrow">Cardápio Digital</p>}
           <h1>Sabor do Campo</h1>
         </div>
       </button>

@@ -65,7 +65,7 @@ function MenuPage({
     <section className="hero-card">
       <div className="hero-copy">
         <p className="eyebrow">Sabor do Campo</p>
-        <h2>Cardapio</h2>
+        <h2>Cardápio</h2>
         <p>
         Um cardápio variado, leve  cuidadosamente elaborado para oferecer uma experiência gastronômica completa, com opções que contemplam entradas, pratos principais e sobremesas. O restaurante possui foco na culinária vegetariana e vegana,  mas também disponibiliza pratos tradicionais para atender a diferentes preferências.
         </p>
@@ -81,7 +81,7 @@ function MenuPage({
           />
         </div>
 
-        {isLoading ? <p className="feedback-message">Carregando cardapio...</p> : null}
+        {isLoading ? <p className="feedback-message">Carregando cardápio...</p> : null}
 
         {!isLoading && error ? (
           <div className="feedback-card">
@@ -150,7 +150,7 @@ function MenuPage({
                 Adicionar
               </button>
               <button type="button" onClick={handleCloseConfirm}>
-                Voltar ao cardapio
+                Voltar ao cardápio
               </button>
             </div>
           </div>

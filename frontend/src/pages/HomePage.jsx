@@ -46,6 +46,11 @@ function HomePage({ onGoToMenu }) {
           </p>
         </div>
       </div>
+      <button type="button" className="landing-cta" onClick={onGoToMenu}>
+        Faça seu Pedido
+      </button>
+
+      \<br />      \<br />  
 
       <div className="landing-section">
         <h3>Nosso estabelecimento</h3>
@@ -54,6 +59,7 @@ function HomePage({ onGoToMenu }) {
           <img src={restaurante2} alt="Fachada do restaurante 2" className="front-image" />
         </div>
       </div>
+      \<br />
 
       <div className="landing-section">
         <h3>Pratos em destaque</h3>
@@ -83,9 +89,7 @@ function HomePage({ onGoToMenu }) {
         ))}
       </div>
 
-      <button type="button" className="landing-cta" onClick={onGoToMenu}>
-        Faça seu Pedido
-      </button>
+      
     </section>
   );
 }

@@ -92,7 +92,7 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
         <div className="hero-copy">
           <h2>Nenhum pedido ativo</h2>
           <button className="edit-address-button" onClick={onBackToMenu}>
-            Voltar ao cardapio
+            Voltar ao cardápio
           </button>
         </div>
       </section>
@@ -174,7 +174,7 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
             ) : null}
 
             <button className="edit-address-button" onClick={onBackToMenu}>
-              Voltar ao cardapio
+              Voltar ao cardápio
             </button>
           </div>
         </div>
