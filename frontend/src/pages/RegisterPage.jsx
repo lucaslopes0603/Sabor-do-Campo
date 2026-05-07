@@ -15,8 +15,16 @@ function RegisterPage({ onNavigate }) {
   const [status, setStatus] = useState(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  const passwordHelp = "Minimo de 8 caracteres, com letra maiuscula, minuscula e numero.";
+
   async function handleSubmit(e) {
     e.preventDefault();
+    const passwordError = validatePassword(form.password);
+
+    if (passwordError) {
+      setStatus({ type: "error", message: passwordError });
+      return;
+    }
 
     try {
       await createUser(form);
@@ -51,7 +59,8 @@ function RegisterPage({ onNavigate }) {
             <input
               required
               value={form.cpf}
-              onChange={(e) => setForm({ ...form, cpf: e.target.value })}
+              maxLength={14}
+              onChange={(e) => setForm({ ...form, cpf: formatCpf(e.target.value) })}
             />
           </label>
 
@@ -72,6 +81,9 @@ function RegisterPage({ onNavigate }) {
                 <input
                   type={isPasswordVisible ? "text" : "password"}
                   required
+                  minLength={8}
+                  pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}"
+                  title={passwordHelp}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
@@ -85,13 +97,18 @@ function RegisterPage({ onNavigate }) {
                   {isPasswordVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
                 </button>
               </div>
+              <small className="field-help">{passwordHelp}</small>
             </label>
 
             <label>
               <span>Telefone</span>
               <input
+                required
+                inputMode="tel"
+                maxLength={15}
+                placeholder="(31) 99999-9999"
                 value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
               />
             </label>
           </div>
@@ -117,6 +134,36 @@ function RegisterPage({ onNavigate }) {
       </div>
     </section>
   );
+}
+
+function validatePassword(password) {
+  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}/.test(password)) {
+    return "Senha deve ter no minimo 8 caracteres, com letra maiuscula, minuscula e numero.";
+  }
+
+  return "";
+}
+
+function formatCpf(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+  return digits
+    .replace(/^(\d{3})(\d)/, '$1.$2')
+    .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d)/, '.$1-$2');
+}
+
+function formatPhone(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+
+  if (digits.length <= 10) {
+    return digits
+      .replace(/^(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d)/, '$1-$2');
+  }
+
+  return digits
+    .replace(/^(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d)/, '$1-$2');
 }
 
 export default RegisterPage;

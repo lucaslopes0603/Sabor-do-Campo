@@ -9,16 +9,34 @@ const initialForm = {
   imageUrl: '',
 };
 
-function ProductFormPage({ categories, onSubmit, onSuccess }) {
+function ProductFormPage({ categories, items, onSubmit, onDelete, onSuccess }) {
   const [formData, setFormData] = useState(initialForm);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const handleChange = (field) => (event) => {
     setFormData((current) => ({
       ...current,
       [field]: event.target.value,
     }));
+  };
+
+  const handleDelete = async (item) => {
+    const confirmed = window.confirm(`Deseja deletar ${item.name} do cardapio?`);
+    if (!confirmed) return;
+
+    setDeletingId(item.id);
+    setStatus({ type: '', message: '' });
+
+    try {
+      await onDelete(item.id);
+      setStatus({ type: 'success', message: 'Produto deletado com sucesso.' });
+    } catch (deleteError) {
+      setStatus({ type: 'error', message: deleteError.message });
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -40,7 +58,7 @@ function ProductFormPage({ categories, onSubmit, onSuccess }) {
 
   return (
     <section className="form-page">
-      <div className="form-card">
+      <div className="form-card admin-product-panel">
         <p className="eyebrow">Painel interno</p>
         <h2>Cadastro do produto</h2>
         <p>
@@ -117,6 +135,36 @@ function ProductFormPage({ categories, onSubmit, onSuccess }) {
             </p>
           ) : null}
         </form>
+
+        <div className="admin-product-list">
+          <div className="admin-product-list-heading">
+            <h3>Produtos cadastrados</h3>
+            <span>{items.length} itens</span>
+          </div>
+
+          {items.length === 0 ? (
+            <p className="muted-message">Nenhum produto cadastrado.</p>
+          ) : (
+            <div className="admin-product-items">
+              {items.map((item) => (
+                <article key={item.id} className="admin-product-row">
+                  <div>
+                    <strong>{item.name}</strong>
+                    <span>{item.categoryLabel} - R$ {Number(item.price).toFixed(2).replace('.', ',')}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="danger-button"
+                    disabled={deletingId === item.id}
+                    onClick={() => handleDelete(item)}
+                  >
+                    {deletingId === item.id ? 'Deletando...' : 'Deletar'}
+                  </button>
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

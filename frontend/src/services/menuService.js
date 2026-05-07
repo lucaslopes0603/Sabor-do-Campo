@@ -15,3 +15,9 @@ export function createMenuItem(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export function deleteMenuItem(id) {
+  return apiRequest(`/menu-items/${id}`, {
+    method: 'DELETE',
+  });
+}

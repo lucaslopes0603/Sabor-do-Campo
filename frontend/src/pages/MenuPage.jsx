@@ -13,6 +13,7 @@ function MenuPage({
   onAddToCart,
   onRequireLogin,
   isLoggedIn,
+  canAddToCart = true,
   onRetry,
 }) {
   const [search, setSearch] = useState('');
@@ -43,6 +44,10 @@ function MenuPage({
   const sections = Object.entries(groupedItems);
 
   const handleOpenConfirm = (item) => {
+    if (!canAddToCart) {
+      return;
+    }
+
     if (!isLoggedIn) {
       onRequireLogin();
       return;
@@ -109,7 +114,12 @@ function MenuPage({
 
                 <div className="menu-grid">
                   {sectionItems.map((item) => (
-                    <MenuItemCard key={item.id} item={item} onAddToCart={handleOpenConfirm} />
+                    <MenuItemCard
+                      key={item.id}
+                      item={item}
+                      onAddToCart={handleOpenConfirm}
+                      canAddToCart={canAddToCart}
+                    />
                   ))}
                 </div>
               </section>

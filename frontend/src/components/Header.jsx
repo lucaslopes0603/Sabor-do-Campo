@@ -3,7 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import logoImage from '../assets/imgs/logo.svg';
 
-function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, user }) {
+function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, user, showCart = true }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleNavigate = (page) => {
@@ -29,14 +29,16 @@ function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, use
       </button>
 
       <div className="mobile-quick-actions">
-        <button
-          type="button"
-          className="mobile-icon-button"
-          aria-label={`Carrinho com ${cartCount} itens`}
-          onClick={() => handleNavigate('cart')}
-        >
-          <ShoppingCartIcon className="cart-icon" />
-        </button>
+        {showCart ? (
+          <button
+            type="button"
+            className="mobile-icon-button"
+            aria-label={`Carrinho com ${cartCount} itens`}
+            onClick={() => handleNavigate('cart')}
+          >
+            <ShoppingCartIcon className="cart-icon" />
+          </button>
+        ) : null}
         <button
           type="button"
           className="mobile-icon-button"
@@ -80,19 +82,21 @@ function Header({ activePage, onNavigate, cartCount, pages, hasActivePedido, use
             className={activePage === 'pedidoStatus' ? 'nav-button active' : 'nav-button'}
             onClick={() => handleNavigate('pedidoStatus')}
           >
-            Pedido
+            Pedidos
           </button>
         )}
 
-        <button
-          type="button"
-          className="cart-badge"
-          aria-label={`Carrinho com ${cartCount} itens`}
-          onClick={() => handleNavigate('cart')}
-        >
-          <ShoppingCartIcon className="cart-icon" />
-          <strong>{cartCount}</strong>
-        </button>
+        {showCart ? (
+          <button
+            type="button"
+            className="cart-badge"
+            aria-label={`Carrinho com ${cartCount} itens`}
+            onClick={() => handleNavigate('cart')}
+          >
+            <ShoppingCartIcon className="cart-icon" />
+            <strong>{cartCount}</strong>
+          </button>
+        ) : null}
         <button
           type="button"
           className="person-badge"

@@ -116,6 +116,14 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
+    public List<PedidoResponse> listarPedidosAtivos(String email) {
+        return pedidoRepository.findByUserEmailOrderByCriadoEmDesc(email).stream()
+            .filter(pedido -> calcularStatus(pedido) != PedidoStatus.PEDIDO_ENTREGUE)
+            .map(this::toPedidoResponse)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<PedidoResponse> listarTodos() {
         return pedidoRepository.findAllByOrderByCriadoEmDesc().stream()
             .map(this::toPedidoResponse)

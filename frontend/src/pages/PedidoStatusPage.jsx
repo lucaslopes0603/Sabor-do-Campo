@@ -29,23 +29,37 @@ function formatCurrency(value) {
   });
 }
 
-function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
-  const [status, setStatus] = useState(pedido?.status ?? 'PEDIDO_FEITO');
+function PedidoStatusPage({ pedido, pedidos = [], onBackToMenu, onStatusChange }) {
+  const availablePedidos = useMemo(() => (
+    pedidos.length > 0 ? pedidos : pedido?.id ? [pedido] : []
+  ), [pedido, pedidos]);
+
+  const [selectedPedidoId, setSelectedPedidoId] = useState(availablePedidos[0]?.id ?? null);
+  const currentPedido = availablePedidos.find((item) => item.id === selectedPedidoId)
+    ?? availablePedidos[0]
+    ?? null;
+  const [status, setStatus] = useState(currentPedido?.status ?? 'PEDIDO_FEITO');
   const [isConfirmingDelivery, setIsConfirmingDelivery] = useState(false);
 
   useEffect(() => {
-    setStatus(pedido?.status ?? 'PEDIDO_FEITO');
-  }, [pedido?.id, pedido?.status]);
+    if (!availablePedidos.some((item) => item.id === selectedPedidoId)) {
+      setSelectedPedidoId(availablePedidos[0]?.id ?? null);
+    }
+  }, [availablePedidos, selectedPedidoId]);
 
   useEffect(() => {
-    if (!pedido?.id) return;
+    setStatus(currentPedido?.status ?? 'PEDIDO_FEITO');
+  }, [currentPedido?.id, currentPedido?.status]);
+
+  useEffect(() => {
+    if (!currentPedido?.id) return;
 
     let intervalId;
     let isMounted = true;
 
     async function loadStatus() {
       try {
-        const response = await buscarStatusPedido(pedido.id);
+        const response = await buscarStatusPedido(currentPedido.id);
         if (!isMounted) return;
         setStatus(response.status);
       } catch (err) {
@@ -60,12 +74,12 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
       isMounted = false;
       window.clearInterval(intervalId);
     };
-  }, [pedido?.id]);
+  }, [currentPedido?.id]);
 
   useEffect(() => {
-    if (!pedido?.id || !onStatusChange) return;
-    onStatusChange(status);
-  }, [pedido?.id, status, onStatusChange]);
+    if (!currentPedido?.id || !onStatusChange) return;
+    onStatusChange(currentPedido.id, status);
+  }, [currentPedido?.id, status, onStatusChange]);
 
   const currentStep = useMemo(() => STATUS_FLOW.indexOf(status), [status]);
   const safeStep = currentStep < 0 ? 0 : currentStep;
@@ -73,11 +87,11 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
   const canConfirmDelivery = status === 'PEDIDO_EM_ROTA_DE_ENTREGA';
 
   async function handleConfirmDelivery() {
-    if (!pedido?.id) return;
+    if (!currentPedido?.id) return;
 
     try {
       setIsConfirmingDelivery(true);
-      const response = await confirmarEntregaPedido(pedido.id);
+      const response = await confirmarEntregaPedido(currentPedido.id);
       setStatus(response.status);
     } catch (err) {
       alert(err.message || 'Nao foi possivel confirmar entrega.');
@@ -86,7 +100,7 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
     }
   }
 
-  if (!pedido?.id) {
+  if (!currentPedido?.id) {
     return (
       <section className="hero-card">
         <div className="hero-copy">
@@ -102,11 +116,27 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
   return (
       <section className="hero-card">
         <div className="hero-copy">
-          <h2>Status do pedido</h2>
-          <p className="pedido-code">Codigo: {pedido.codigo}</p>
+          <h2>Status dos pedidos</h2>
+          <p className="pedido-code">Codigo: {currentPedido.codigo}</p>
         </div>
 
         <div className="menu-panel">
+          {availablePedidos.length > 1 ? (
+            <div className="pedido-switcher" aria-label="Pedidos em andamento">
+              {availablePedidos.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={item.id === currentPedido.id ? 'active' : ''}
+                  onClick={() => setSelectedPedidoId(item.id)}
+                >
+                  <strong>{item.codigo}</strong>
+                  <span>{STATUS_LABEL[item.status] ?? item.status}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+
           <div className="status-summary">
             <p className="status-summary-label">Etapa atual</p>
             <div className="status-summary-main">
@@ -123,11 +153,11 @@ function PedidoStatusPage({ pedido, onBackToMenu, onStatusChange }) {
           <div className="pedido-products">
             <div className="pedido-products-heading">
               <h3>Produtos do pedido</h3>
-              <strong>{formatCurrency(pedido.precoTotal)}</strong>
+              <strong>{formatCurrency(currentPedido.precoTotal)}</strong>
             </div>
 
             <div className="pedido-products-list">
-              {(pedido.itens ?? []).map((item) => (
+              {(currentPedido.itens ?? []).map((item) => (
                 <div className="pedido-product-row" key={item.id}>
                   <div className="pedido-product-image-wrap">
                     {item.imageUrl ? (
